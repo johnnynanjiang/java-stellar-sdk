@@ -373,5 +373,20 @@ public class Transaction {
       mSourceAccount.incrementSequenceNumber();
       return transaction;
     }
+
+    public Transaction buildForTestOnly() {
+      // Ensure setTimeout called or maxTime is set
+      if ((mTimeBounds == null || mTimeBounds != null && mTimeBounds.getMaxTime() == 0) && !timeoutSet) {
+        throw new RuntimeException("TimeBounds has to be set or you must call setTimeout(TIMEOUT_INFINITE).");
+      }
+
+      Operation[] operations = new Operation[mOperations.size()];
+      operations = mOperations.toArray(operations);
+      //Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
+      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, 1, operations, mMemo, new TimeBounds(1000, 9999));
+      // Increment sequence number when there were no exceptions when creating a transaction
+      //mSourceAccount.incrementSequenceNumber();
+      return transaction;
+    }
   }
 }
