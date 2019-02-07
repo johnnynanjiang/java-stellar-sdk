@@ -1,6 +1,5 @@
-package org.stellar.sdk.requests;
+package org.stellar.sdk.trust;
 
-import okhttp3.HttpUrl;
 import org.junit.Test;
 import org.stellar.sdk.*;
 import org.stellar.sdk.responses.AccountResponse;
@@ -39,17 +38,6 @@ public class TrustTest {
     final String TO_ACCOUNT_PUBLIC_ADDRESS = "GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK";
 
     final String HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org";
-
-    @Test
-    public void testAccounts() {
-        Server server = new Server("https://horizon-testnet.stellar.org");
-        HttpUrl uri = server.accounts()
-                .cursor("13537736921089")
-                .limit(200)
-                .order(RequestBuilder.Order.ASC)
-                .buildUri();
-        assertEquals("https://horizon-testnet.stellar.org/accounts?cursor=13537736921089&limit=200&order=asc", uri.toString());
-    }
 
     @Test
     public void generateKeyPairAndCreateAccountOnTestNet() throws IOException {
