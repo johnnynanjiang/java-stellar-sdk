@@ -79,6 +79,10 @@ public class Transaction {
     return Util.hash(this.signatureBase());
   }
 
+    public byte[] hashForTestOnly() {
+        return Util.hash(this.signatureBaseForTestOnly());
+    }
+
   /**
    * Returns signature base.
    */
@@ -105,6 +109,31 @@ public class Transaction {
     }
   }
 
+    public byte[] signatureBaseForTestOnly() {
+        if (Network.current() == null) {
+            throw new NoNetworkSelectedException();
+        }
+
+        try {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            // Hashed NetworkID
+            outputStream.write(Network.current().getNetworkId());
+// TODO: one single step at once, just hash the network id at the moment
+/*
+            // Envelope Type - 4 bytes
+            outputStream.write(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array());
+            // Transaction XDR bytes
+            ByteArrayOutputStream txOutputStream = new ByteArrayOutputStream();
+            XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(txOutputStream);
+            org.stellar.sdk.xdr.Transaction.encode(xdrOutputStream, this.toXdr());
+            outputStream.write(txOutputStream.toByteArray());
+*/
+            return outputStream.toByteArray();
+        } catch (IOException exception) {
+            return null;
+        }
+    }
+
   public KeyPair getSourceAccount() {
     return mSourceAccount;
   }
@@ -120,7 +149,7 @@ public class Transaction {
   public Memo getMemo() {
     return mMemo;
   }
-  
+
   /**
    * @return TimeBounds, or null (representing no time restrictions)
    */
@@ -303,7 +332,7 @@ public class Transaction {
       mMemo = memo;
       return this;
     }
-    
+
     /**
      * Adds a <a href="https://www.stellar.org/developers/learn/concepts/transactions.html" target="_blank">time-bounds</a> to this transaction.
      * @param timeBounds
@@ -382,10 +411,9 @@ public class Transaction {
 
       Operation[] operations = new Operation[mOperations.size()];
       operations = mOperations.toArray(operations);
-      //Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
-      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, 1, operations, mMemo, new TimeBounds(1000, 9999));
+      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
       // Increment sequence number when there were no exceptions when creating a transaction
-      //mSourceAccount.incrementSequenceNumber();
+      mSourceAccount.incrementSequenceNumber();
       return transaction;
     }
   }

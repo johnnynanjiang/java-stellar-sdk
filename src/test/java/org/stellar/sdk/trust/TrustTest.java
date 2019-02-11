@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -35,7 +36,8 @@ public class TrustTest {
  */
 
     final String FROM_ACCOUNT_SECRET_SEED = "SAV4O6KS2F6ZKVKRBDY2CC3AAP2NQUIN4OIET2BGSZYV6FX7OJMWPBV4";
-    final String TO_ACCOUNT_PUBLIC_ADDRESS = "GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK";
+    final String FROM_ACCOUNT_PUBLIC_KEY = "GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB";
+    final String TO_ACCOUNT_PUBLIC_KEY = "GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK";
 
     final String HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org";
 
@@ -64,7 +66,7 @@ public class TrustTest {
         Server server = new Server(HORIZON_TESTNET_URL);
 
         KeyPair source = KeyPair.fromSecretSeed(FROM_ACCOUNT_SECRET_SEED);
-        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_ADDRESS);
+        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_KEY);
 
         // First, check to make sure that the destination account exists.
         // You could skip this, but if the account does not exist, you will be charged
@@ -112,7 +114,7 @@ public class TrustTest {
         Server server = new Server(HORIZON_TESTNET_URL);
 
         KeyPair source = KeyPair.fromSecretSeed(FROM_ACCOUNT_SECRET_SEED);
-        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_ADDRESS);
+        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_KEY);
 
         // First, check to make sure that the destination account exists.
         // You could skip this, but if the account does not exist, you will be charged
@@ -131,12 +133,23 @@ public class TrustTest {
                 // optional and does not affect how Stellar treats the transaction.
                 .addMemo(Memo.text("test by JNJ"))
                 .setTimeout(TEN_SECONDS_TIMEOUT)
-                .buildForTestOnly();
+                .build(); // or .buildForTestOnly()
 
         // Hash the transaction
-        String hashString = bytesToHex(transaction.hash());
+        String hashString = bytesToHex(transaction.hashForTestOnly());
         System.out.println("TX hash: \n" + hashString);
 
-        assertEquals("b906bebee03981251e7bae82ae1206c246ca258f9497b24e3b46e0ca904681f1", hashString);
+        assertEquals("f016a53457a4476cf07e542bd23736b4f19aae21a91dfa14841b648522bdc2da", hashString);
+    }
+
+    @Test
+    public void testPublicKeyDecoding() {
+        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(FROM_ACCOUNT_PUBLIC_KEY));
+        byte[] decoded = StrKey.decodeStellarAccountId(FROM_ACCOUNT_PUBLIC_KEY);
+
+        assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", FROM_ACCOUNT_PUBLIC_KEY);
+        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25, -63, -127]", Arrays.toString(decodedInBase32));
+
+        System.out.println("decoded: \n" + Arrays.toString(decoded) + ", size is: " + decoded.length);
     }
 }

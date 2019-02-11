@@ -5,7 +5,7 @@ import com.google.common.io.BaseEncoding;
 import java.io.*;
 import java.util.Arrays;
 
-class StrKey {
+public class StrKey {
     public enum VersionByte {
         ACCOUNT_ID((byte)(6 << 3)), // G
         SEED((byte)(18 << 3)), // S
@@ -20,7 +20,7 @@ class StrKey {
         }
     }
 
-    private static BaseEncoding base32Encoding = BaseEncoding.base32().upperCase().omitPadding();
+    public static BaseEncoding base32Encoding = BaseEncoding.base32().upperCase().omitPadding();
 
     public static String encodeStellarAccountId(byte[] data) {
         char[] encoded = encodeCheck(VersionByte.ACCOUNT_ID, data);
