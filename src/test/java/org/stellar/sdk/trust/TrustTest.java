@@ -159,6 +159,6 @@ public class TrustTest {
         assertEquals("[-63, -127]", Arrays.toString(checksum));
 
         byte[] decoded = StrKey.decodeStellarAccountId(FROM_ACCOUNT_PUBLIC_KEY);
-        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", decoded);
+        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(decoded));
     }
 }
