@@ -144,12 +144,21 @@ public class TrustTest {
 
     @Test
     public void testPublicKeyDecoding() {
-        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(FROM_ACCOUNT_PUBLIC_KEY));
-        byte[] decoded = StrKey.decodeStellarAccountId(FROM_ACCOUNT_PUBLIC_KEY);
-
         assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", FROM_ACCOUNT_PUBLIC_KEY);
+
+        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(FROM_ACCOUNT_PUBLIC_KEY));
         assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25, -63, -127]", Arrays.toString(decodedInBase32));
 
-        System.out.println("decoded: \n" + Arrays.toString(decoded) + ", size is: " + decoded.length);
+        byte[] payload = Arrays.copyOfRange(decodedInBase32, 0, decodedInBase32.length-2);
+        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(payload));
+
+        byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
+        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(data));
+
+        byte[] checksum = Arrays.copyOfRange(decodedInBase32, decodedInBase32.length-2, decodedInBase32.length);
+        assertEquals("[-63, -127]", Arrays.toString(checksum));
+
+        byte[] decoded = StrKey.decodeStellarAccountId(FROM_ACCOUNT_PUBLIC_KEY);
+        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", decoded);
     }
 }
