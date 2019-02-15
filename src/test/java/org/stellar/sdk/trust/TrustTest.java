@@ -132,7 +132,7 @@ public class TrustTest {
                 // A memo allows you to add your own metadata to a transaction. It's
                 // optional and does not affect how Stellar treats the transaction.
                 .addMemo(Memo.text("test by JNJ"))
-                .setTimeout(TEN_SECONDS_TIMEOUT)
+                .setTimeout(Transaction.Builder.TIMEOUT_INFINITE)
                 .buildForTestOnly();
 
         // Hash the transaction

@@ -112,13 +112,13 @@ public class Transaction  {
     AccountID.encode(stream, encodedTransaction.sourceAccount);
     Uint32.encode(stream, encodedTransaction.fee);
     SequenceNumber.encode(stream, encodedTransaction.seqNum);
-    /*
     if (encodedTransaction.timeBounds != null) {
       stream.writeInt(1);
       TimeBounds.encode(stream, encodedTransaction.timeBounds);
     } else {
       stream.writeInt(0);
     }
+    /*
     Memo.encode(stream, encodedTransaction.memo);
     int operationssize = encodedTransaction.getOperations().length;
     stream.writeInt(operationssize);
