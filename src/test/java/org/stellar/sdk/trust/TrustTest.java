@@ -139,7 +139,7 @@ public class TrustTest {
         String hashString = bytesToHex(transaction.hash());
         System.out.println("TX hash: \n" + hashString);
 
-        assertEquals("a60d309e0a51eb152df9785580504bbd120fc32793759b23c31d08afde99bc0b", hashString);
+        assertEquals("6de700f2cb13bb548ff8fb52b26488968f4921a8b8cb662d2640378575e0a31c", hashString);
     }
 
     @Test
