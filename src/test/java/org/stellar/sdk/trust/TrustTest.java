@@ -133,13 +133,13 @@ public class TrustTest {
                 // optional and does not affect how Stellar treats the transaction.
                 .addMemo(Memo.text("test by JNJ"))
                 .setTimeout(TEN_SECONDS_TIMEOUT)
-                .build(); // or .buildForTestOnly()
+                .build();
 
         // Hash the transaction
-        String hashString = bytesToHex(transaction.hashForTestOnly());
+        String hashString = bytesToHex(transaction.hash());
         System.out.println("TX hash: \n" + hashString);
 
-        assertEquals("0416ad60a023bf7d8073e40fb7172c018df3acd8ceff4195527881d33695a5fc", hashString);
+        assertEquals("80e4f0bc072c5bcfbf9e7a2c5b64e9fe5dc3d674f1527b079e761b1e02022e61", hashString);
     }
 
     @Test

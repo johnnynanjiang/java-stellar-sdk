@@ -4,7 +4,10 @@
 package org.stellar.sdk.xdr;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 // === xdr source ============================================================
 
@@ -104,6 +107,26 @@ public class Transaction  {
       Operation.encode(stream, encodedTransaction.operations[i]);
     }
     TransactionExt.encode(stream, encodedTransaction.ext);
+  }
+  public static void encodeForTestOnly(XdrDataOutputStream stream, Transaction encodedTransaction) throws IOException{
+    AccountID.encode(stream, encodedTransaction.sourceAccount);
+    /*
+    Uint32.encode(stream, encodedTransaction.fee);
+    SequenceNumber.encode(stream, encodedTransaction.seqNum);
+    if (encodedTransaction.timeBounds != null) {
+      stream.writeInt(1);
+      TimeBounds.encode(stream, encodedTransaction.timeBounds);
+    } else {
+      stream.writeInt(0);
+    }
+    Memo.encode(stream, encodedTransaction.memo);
+    int operationssize = encodedTransaction.getOperations().length;
+    stream.writeInt(operationssize);
+    for (int i = 0; i < operationssize; i++) {
+      Operation.encode(stream, encodedTransaction.operations[i]);
+    }
+    TransactionExt.encode(stream, encodedTransaction.ext);
+    */
   }
   public static Transaction decode(XdrDataInputStream stream) throws IOException {
     Transaction decodedTransaction = new Transaction();

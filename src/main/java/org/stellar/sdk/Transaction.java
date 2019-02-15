@@ -6,6 +6,7 @@ import org.stellar.sdk.xdr.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -79,10 +80,6 @@ public class Transaction {
     return Util.hash(this.signatureBase());
   }
 
-    public byte[] hashForTestOnly() {
-        return Util.hash(this.signatureBaseForTestOnly());
-    }
-
   /**
    * Returns signature base.
    */
@@ -100,7 +97,12 @@ public class Transaction {
       // Transaction XDR bytes
       ByteArrayOutputStream txOutputStream = new ByteArrayOutputStream();
       XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(txOutputStream);
-      org.stellar.sdk.xdr.Transaction.encode(xdrOutputStream, this.toXdr());
+      //org.stellar.sdk.xdr.Transaction.encode(xdrOutputStream, this.toXdr());
+      org.stellar.sdk.xdr.Transaction.encodeForTestOnly(xdrOutputStream, this.toXdr());
+      System.out.println("txOutputStream.toByteArray()");
+      System.out.println(Arrays.toString(txOutputStream.toByteArray()));
+      System.out.println(org.bouncycastle.util.encoders.Hex.toHexString(txOutputStream.toByteArray()));
+
       outputStream.write(txOutputStream.toByteArray());
 
       return outputStream.toByteArray();
@@ -108,33 +110,6 @@ public class Transaction {
       return null;
     }
   }
-
-    public byte[] signatureBaseForTestOnly() {
-        if (Network.current() == null) {
-            throw new NoNetworkSelectedException();
-        }
-
-        try {
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-            // Hashed NetworkID
-            outputStream.write(Network.current().getNetworkId());
-            // Envelope Type - 4 bytes
-            outputStream.write(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array());
-            System.out.println("Envelope Type - 4 bytes - " + Arrays.toString(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array()));
-
-// TODO: one single step at once, just hash the network id at the moment
-/*
-            // Transaction XDR bytes
-            ByteArrayOutputStream txOutputStream = new ByteArrayOutputStream();
-            XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(txOutputStream);
-            org.stellar.sdk.xdr.Transaction.encode(xdrOutputStream, this.toXdr());
-            outputStream.write(txOutputStream.toByteArray());
-*/
-            return outputStream.toByteArray();
-        } catch (IOException exception) {
-            return null;
-        }
-    }
 
   public KeyPair getSourceAccount() {
     return mSourceAccount;
