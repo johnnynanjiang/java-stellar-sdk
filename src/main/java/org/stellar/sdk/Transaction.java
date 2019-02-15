@@ -388,7 +388,7 @@ public class Transaction {
 
       Operation[] operations = new Operation[mOperations.size()];
       operations = mOperations.toArray(operations);
-      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, mSourceAccount.getIncrementedSequenceNumber(), operations, mMemo, mTimeBounds);
+      Transaction transaction = new Transaction(mSourceAccount.getKeypair(), operations.length * BASE_FEE, 1L, operations, mMemo, mTimeBounds);
       // Increment sequence number when there were no exceptions when creating a transaction
       mSourceAccount.incrementSequenceNumber();
       return transaction;
