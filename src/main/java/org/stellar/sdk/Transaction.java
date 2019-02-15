@@ -118,10 +118,12 @@ public class Transaction {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             // Hashed NetworkID
             outputStream.write(Network.current().getNetworkId());
-// TODO: one single step at once, just hash the network id at the moment
-/*
             // Envelope Type - 4 bytes
             outputStream.write(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array());
+            System.out.println("Envelope Type - 4 bytes - " + Arrays.toString(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array()));
+
+// TODO: one single step at once, just hash the network id at the moment
+/*
             // Transaction XDR bytes
             ByteArrayOutputStream txOutputStream = new ByteArrayOutputStream();
             XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(txOutputStream);

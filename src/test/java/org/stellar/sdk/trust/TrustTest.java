@@ -18,26 +18,26 @@ import static org.junit.Assert.assertEquals;
 
 public class TrustTest {
     /*
-    Account 1
-    ---------
+    Account 1 - From
+    ----------------
     encoded seed:
     SAV4O6KS2F6ZKVKRBDY2CC3AAP2NQUIN4OIET2BGSZYV6FX7OJMWPBV4
 
-    public key / account id:
+    account id:
     GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB
 
-    Account 2
-    ---------
+    Account 2 - To
+    --------------
     encoded seed:
     SDAEFQN6O4EETVPZWKL74KHT3WI5KVYGDAXXGQ5D5KZLVGT4MMHSZMVJ
 
-    public key / account id:
+    account id:
     GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK
  */
 
-    final String FROM_ACCOUNT_SECRET_SEED = "SAV4O6KS2F6ZKVKRBDY2CC3AAP2NQUIN4OIET2BGSZYV6FX7OJMWPBV4";
-    final String FROM_ACCOUNT_PUBLIC_KEY = "GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB";
-    final String TO_ACCOUNT_PUBLIC_KEY = "GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK";
+    final String SECRET_SEED_HASH_OF_FROM = "SAV4O6KS2F6ZKVKRBDY2CC3AAP2NQUIN4OIET2BGSZYV6FX7OJMWPBV4";
+    final String ACCOUNT_ID_HASH_OF_FROM = "GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB";
+    final String ACCOUNT_ID_HASH_OF_TO = "GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK";
 
     final String HORIZON_TESTNET_URL = "https://horizon-testnet.stellar.org";
 
@@ -65,8 +65,8 @@ public class TrustTest {
         Network.useTestNetwork();
         Server server = new Server(HORIZON_TESTNET_URL);
 
-        KeyPair source = KeyPair.fromSecretSeed(FROM_ACCOUNT_SECRET_SEED);
-        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_KEY);
+        KeyPair source = KeyPair.fromSecretSeed(SECRET_SEED_HASH_OF_FROM);
+        KeyPair destination = KeyPair.fromAccountId(ACCOUNT_ID_HASH_OF_TO);
 
         // First, check to make sure that the destination account exists.
         // You could skip this, but if the account does not exist, you will be charged
@@ -113,8 +113,8 @@ public class TrustTest {
         Network.useTestNetwork();
         Server server = new Server(HORIZON_TESTNET_URL);
 
-        KeyPair source = KeyPair.fromSecretSeed(FROM_ACCOUNT_SECRET_SEED);
-        KeyPair destination = KeyPair.fromAccountId(TO_ACCOUNT_PUBLIC_KEY);
+        KeyPair source = KeyPair.fromSecretSeed(SECRET_SEED_HASH_OF_FROM);
+        KeyPair destination = KeyPair.fromAccountId(ACCOUNT_ID_HASH_OF_TO);
 
         // First, check to make sure that the destination account exists.
         // You could skip this, but if the account does not exist, you will be charged
@@ -139,14 +139,14 @@ public class TrustTest {
         String hashString = bytesToHex(transaction.hashForTestOnly());
         System.out.println("TX hash: \n" + hashString);
 
-        assertEquals("f016a53457a4476cf07e542bd23736b4f19aae21a91dfa14841b648522bdc2da", hashString);
+        assertEquals("0416ad60a023bf7d8073e40fb7172c018df3acd8ceff4195527881d33695a5fc", hashString);
     }
 
     @Test
-    public void testPublicKeyDecoding() {
-        assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", FROM_ACCOUNT_PUBLIC_KEY);
+    public void testAccountIdOfFromDecoding() {
+        assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", ACCOUNT_ID_HASH_OF_FROM);
 
-        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(FROM_ACCOUNT_PUBLIC_KEY));
+        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(ACCOUNT_ID_HASH_OF_FROM));
         assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25, -63, -127]", Arrays.toString(decodedInBase32));
 
         byte[] payload = Arrays.copyOfRange(decodedInBase32, 0, decodedInBase32.length-2);
@@ -158,7 +158,15 @@ public class TrustTest {
         byte[] checksum = Arrays.copyOfRange(decodedInBase32, decodedInBase32.length-2, decodedInBase32.length);
         assertEquals("[-63, -127]", Arrays.toString(checksum));
 
-        byte[] decoded = StrKey.decodeStellarAccountId(FROM_ACCOUNT_PUBLIC_KEY);
+        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_FROM);
         assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(decoded));
+    }
+
+    @Test
+    public void testAccountIdOfToDecoding() {
+        assertEquals("GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK", ACCOUNT_ID_HASH_OF_TO);
+
+        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_TO);
+        assertEquals("[-118, 116, 62, -111, -90, -46, -68, 50, 36, 71, 10, 105, -27, 93, -59, -104, -50, 51, -122, 63, 59, 66, 85, 28, -115, 45, -22, -83, -121, -5, -79, -36]", Arrays.toString(decoded));
     }
 }
