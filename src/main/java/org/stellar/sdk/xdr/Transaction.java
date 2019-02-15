@@ -110,8 +110,8 @@ public class Transaction  {
   }
   public static void encodeForTestOnly(XdrDataOutputStream stream, Transaction encodedTransaction) throws IOException{
     AccountID.encode(stream, encodedTransaction.sourceAccount);
-    /*
     Uint32.encode(stream, encodedTransaction.fee);
+    /*
     SequenceNumber.encode(stream, encodedTransaction.seqNum);
     if (encodedTransaction.timeBounds != null) {
       stream.writeInt(1);
