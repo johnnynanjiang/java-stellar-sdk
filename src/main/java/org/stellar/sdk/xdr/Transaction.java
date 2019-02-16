@@ -118,8 +118,8 @@ public class Transaction  {
     } else {
       stream.writeInt(0);
     }
-    /*
     Memo.encode(stream, encodedTransaction.memo);
+    /*
     int operationssize = encodedTransaction.getOperations().length;
     stream.writeInt(operationssize);
     for (int i = 0; i < operationssize; i++) {
