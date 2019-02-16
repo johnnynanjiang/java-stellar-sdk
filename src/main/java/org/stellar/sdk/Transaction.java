@@ -49,6 +49,14 @@ public class Transaction {
   public void sign(KeyPair signer) {
     checkNotNull(signer, "signer cannot be null");
     byte[] txHash = this.hash();
+    System.out.println("Tx hash bytes: " + Arrays.toString(txHash));
+    mSignatures.add(signer.signDecorated(txHash));
+  }
+
+  public void signForTestOnly(KeyPair signer) {
+    checkNotNull(signer, "signer cannot be null");
+    byte[] txHash = this.hash();
+    System.out.println("Tx hash bytes: " + Arrays.toString(txHash));
     mSignatures.add(signer.signDecorated(txHash));
   }
 

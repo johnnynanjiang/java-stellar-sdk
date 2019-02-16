@@ -61,6 +61,34 @@ public class TrustTest {
     }
 
     @Test
+    public void testAccountIdOfFromDecoding() {
+        assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", ACCOUNT_ID_HASH_OF_FROM);
+
+        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(ACCOUNT_ID_HASH_OF_FROM));
+        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25, -63, -127]", Arrays.toString(decodedInBase32));
+
+        byte[] payload = Arrays.copyOfRange(decodedInBase32, 0, decodedInBase32.length-2);
+        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(payload));
+
+        byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
+        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(data));
+
+        byte[] checksum = Arrays.copyOfRange(decodedInBase32, decodedInBase32.length-2, decodedInBase32.length);
+        assertEquals("[-63, -127]", Arrays.toString(checksum));
+
+        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_FROM);
+        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(decoded));
+    }
+
+    @Test
+    public void testAccountIdOfToDecoding() {
+        assertEquals("GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK", ACCOUNT_ID_HASH_OF_TO);
+
+        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_TO);
+        assertEquals("[-118, 116, 62, -111, -90, -46, -68, 50, 36, 71, 10, 105, -27, 93, -59, -104, -50, 51, -122, 63, 59, 66, 85, 28, -115, 45, -22, -83, -121, -5, -79, -36]", Arrays.toString(decoded));
+    }
+
+    @Test
     public void submitTransaction() throws IOException {
         Network.useTestNetwork();
         Server server = new Server(HORIZON_TESTNET_URL);
@@ -136,37 +164,48 @@ public class TrustTest {
                 .buildForTestOnly();
 
         // Hash the transaction
-        String hashString = bytesToHex(transaction.hashForTestOnly());
-        System.out.println("TX hash: \n" + hashString);
+        byte[] hashBytes = transaction.hashForTestOnly();
+        String hashString = bytesToHex(hashBytes);
+        System.out.println("TX hash bytes: " + Arrays.toString(hashBytes));
+        System.out.println("TX hash HEX: " + hashString);
 
         assertEquals("4a4a13e6e0892d9428ea459db574f16812ff91ab45bff82f8b571139a417942a", hashString);
     }
 
     @Test
-    public void testAccountIdOfFromDecoding() {
-        assertEquals("GCB4PXH4V4WJVLOGCUBOL5JTCL3GIXRJVQJNLFJMN2CGB5TIT6Y6PQMB", ACCOUNT_ID_HASH_OF_FROM);
+    public void signTransaction() throws FormatException {
+        Network.useTestNetwork();
 
-        byte[] decodedInBase32 = StrKey.base32Encoding.decode(java.nio.CharBuffer.wrap(ACCOUNT_ID_HASH_OF_FROM));
-        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25, -63, -127]", Arrays.toString(decodedInBase32));
+        KeyPair source = KeyPair.fromSecretSeed("SCH27VUZZ6UAKB67BDNF6FA42YMBMQCBKXWGMFD5TZ6S5ZZCZFLRXKHS");
+        KeyPair destination = KeyPair.fromAccountId("GDW6AUTBXTOC7FIKUO5BOO3OGLK4SF7ZPOBLMQHMZDI45J2Z6VXRB5NR");
 
-        byte[] payload = Arrays.copyOfRange(decodedInBase32, 0, decodedInBase32.length-2);
-        assertEquals("[48, -125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(payload));
+        long sequenceNumber = 2908908335136768L;
+        Account account = new Account(source, sequenceNumber);
+        Transaction transaction = new Transaction.Builder(account)
+                .addOperation(new CreateAccountOperation.Builder(destination, "2000").build())
+                .setTimeout(Transaction.Builder.TIMEOUT_INFINITE)
+                .build();
 
-        byte[] data = Arrays.copyOfRange(payload, 1, payload.length);
-        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(data));
+        transaction.signForTestOnly(source);
 
-        byte[] checksum = Arrays.copyOfRange(decodedInBase32, decodedInBase32.length-2, decodedInBase32.length);
-        assertEquals("[-63, -127]", Arrays.toString(checksum));
+        assertEquals(
+                "AAAAAF7FIiDToW1fOYUFBC0dmyufJbFTOa2GQESGz+S2h5ViAAAAZAAKVaMAAAABAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA7eBSYbzcL5UKo7oXO24y1ckX+XuCtkDsyNHOp1n1bxAAAAAEqBfIAAAAAAAAAAABtoeVYgAAAEDLki9Oi700N60Lo8gUmEFHbKvYG4QSqXiLIt9T0ru2O5BphVl/jR9tYtHAD+UeDYhgXNgwUxqTEu1WukvEyYcD",
+                transaction.toEnvelopeXdrBase64());
 
-        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_FROM);
-        assertEquals("[-125, -57, -36, -4, -81, 44, -102, -83, -58, 21, 2, -27, -11, 51, 18, -10, 100, 94, 41, -84, 18, -43, -107, 44, 110, -124, 96, -10, 104, -97, -79, -25]", Arrays.toString(decoded));
-    }
+        assertEquals(transaction.getSourceAccount(), source);
+        assertEquals(transaction.getSequenceNumber(), sequenceNumber+1);
+        assertEquals(transaction.getFee(), 100);
 
-    @Test
-    public void testAccountIdOfToDecoding() {
-        assertEquals("GCFHIPURU3JLYMREI4FGTZK5YWMM4M4GH45UEVI4RUW6VLMH7OY5YECK", ACCOUNT_ID_HASH_OF_TO);
+        Transaction transaction2 = Transaction.fromEnvelopeXdr(transaction.toEnvelopeXdr());
 
-        byte[] decoded = StrKey.decodeStellarAccountId(ACCOUNT_ID_HASH_OF_TO);
-        assertEquals("[-118, 116, 62, -111, -90, -46, -68, 50, 36, 71, 10, 105, -27, 93, -59, -104, -50, 51, -122, 63, 59, 66, 85, 28, -115, 45, -22, -83, -121, -5, -79, -36]", Arrays.toString(decoded));
+        assertEquals(transaction.getSourceAccount().getAccountId(), transaction2.getSourceAccount().getAccountId());
+        assertEquals(transaction.getSequenceNumber(), transaction2.getSequenceNumber());
+        assertEquals(transaction.getFee(), transaction2.getFee());
+        assertEquals(
+                ((CreateAccountOperation)transaction.getOperations()[0]).getStartingBalance(),
+                ((CreateAccountOperation)transaction2.getOperations()[0]).getStartingBalance()
+        );
+
+        assertEquals(transaction.getSignatures(), transaction2.getSignatures());
     }
 }

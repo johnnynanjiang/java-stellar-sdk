@@ -225,7 +225,7 @@ public class KeyPair {
    */
   public DecoratedSignature signDecorated(byte[] data) {
     byte[] signatureBytes = this.sign(data);
-
+    System.out.println("signatureBytes: " + Arrays.toString(signatureBytes));
     org.stellar.sdk.xdr.Signature signature = new org.stellar.sdk.xdr.Signature();
     signature.setSignature(signatureBytes);
 
