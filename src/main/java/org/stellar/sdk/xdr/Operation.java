@@ -69,6 +69,15 @@ public class Operation  {
     } else {
     stream.writeInt(0);
     }
+    OperationBody.encode(stream, encodedOperation.body);
+  }
+  public static void encodeForTestOnly(XdrDataOutputStream stream, Operation encodedOperation) throws IOException{
+    if (encodedOperation.sourceAccount != null) {
+      stream.writeInt(1);
+      AccountID.encode(stream, encodedOperation.sourceAccount);
+    } else {
+      stream.writeInt(0);
+    }
     //OperationBody.encode(stream, encodedOperation.body);
     OperationBody.encodeForTestOnly(stream, encodedOperation.body);
   }
@@ -211,13 +220,12 @@ public class Operation  {
 
     public static void encodeForTestOnly(XdrDataOutputStream stream, OperationBody encodedOperationBody) throws IOException {
       stream.writeInt(encodedOperationBody.getDiscriminant().getValue());
-      /*
       switch (encodedOperationBody.getDiscriminant()) {
         case CREATE_ACCOUNT:
           CreateAccountOp.encode(stream, encodedOperationBody.createAccountOp);
           break;
         case PAYMENT:
-          PaymentOp.encode(stream, encodedOperationBody.paymentOp);
+          PaymentOp.encodeForTestOnly(stream, encodedOperationBody.paymentOp);
           break;
         case PATH_PAYMENT:
           PathPaymentOp.encode(stream, encodedOperationBody.pathPaymentOp);
@@ -249,7 +257,6 @@ public class Operation  {
           BumpSequenceOp.encode(stream, encodedOperationBody.bumpSequenceOp);
           break;
       }
-      */
     }
 
     public static OperationBody decode(XdrDataInputStream stream) throws IOException {

@@ -80,10 +80,37 @@ public class Transaction {
     return Util.hash(this.signatureBase());
   }
 
+  public byte[] hashForTestOnly() {
+    return Util.hash(this.signatureBaseForTestOnly());
+  }
+
   /**
    * Returns signature base.
    */
   public byte[] signatureBase() {
+    if (Network.current() == null) {
+      throw new NoNetworkSelectedException();
+    }
+
+    try {
+      ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+      // Hashed NetworkID
+      outputStream.write(Network.current().getNetworkId());
+      // Envelope Type - 4 bytes
+      outputStream.write(ByteBuffer.allocate(4).putInt(EnvelopeType.ENVELOPE_TYPE_TX.getValue()).array());
+      // Transaction XDR bytes
+      ByteArrayOutputStream txOutputStream = new ByteArrayOutputStream();
+      XdrDataOutputStream xdrOutputStream = new XdrDataOutputStream(txOutputStream);
+      org.stellar.sdk.xdr.Transaction.encode(xdrOutputStream, this.toXdr());
+      outputStream.write(txOutputStream.toByteArray());
+
+      return outputStream.toByteArray();
+    } catch (IOException exception) {
+      return null;
+    }
+  }
+
+  public byte[] signatureBaseForTestOnly() {
     if (Network.current() == null) {
       throw new NoNetworkSelectedException();
     }
@@ -102,7 +129,6 @@ public class Transaction {
       System.out.println("txOutputStream.toByteArray()");
       System.out.println(Arrays.toString(txOutputStream.toByteArray()));
       System.out.println(org.bouncycastle.util.encoders.Hex.toHexString(txOutputStream.toByteArray()));
-
       outputStream.write(txOutputStream.toByteArray());
 
       return outputStream.toByteArray();

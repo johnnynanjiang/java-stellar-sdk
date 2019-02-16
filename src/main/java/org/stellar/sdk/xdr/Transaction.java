@@ -122,7 +122,7 @@ public class Transaction  {
     int operationssize = encodedTransaction.getOperations().length;
     stream.writeInt(operationssize);
     for (int i = 0; i < operationssize; i++) {
-      Operation.encode(stream, encodedTransaction.operations[i]);
+      Operation.encodeForTestOnly(stream, encodedTransaction.operations[i]);
     }
     //TransactionExt.encode(stream, encodedTransaction.ext);
   }
