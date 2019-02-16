@@ -69,7 +69,8 @@ public class Operation  {
     } else {
     stream.writeInt(0);
     }
-    OperationBody.encode(stream, encodedOperation.body);
+    //OperationBody.encode(stream, encodedOperation.body);
+    OperationBody.encodeForTestOnly(stream, encodedOperation.body);
   }
   public static Operation decode(XdrDataInputStream stream) throws IOException {
     Operation decodedOperation = new Operation();
@@ -207,6 +208,50 @@ public class Operation  {
     break;
     }
     }
+
+    public static void encodeForTestOnly(XdrDataOutputStream stream, OperationBody encodedOperationBody) throws IOException {
+      stream.writeInt(encodedOperationBody.getDiscriminant().getValue());
+      /*
+      switch (encodedOperationBody.getDiscriminant()) {
+        case CREATE_ACCOUNT:
+          CreateAccountOp.encode(stream, encodedOperationBody.createAccountOp);
+          break;
+        case PAYMENT:
+          PaymentOp.encode(stream, encodedOperationBody.paymentOp);
+          break;
+        case PATH_PAYMENT:
+          PathPaymentOp.encode(stream, encodedOperationBody.pathPaymentOp);
+          break;
+        case MANAGE_OFFER:
+          ManageOfferOp.encode(stream, encodedOperationBody.manageOfferOp);
+          break;
+        case CREATE_PASSIVE_OFFER:
+          CreatePassiveOfferOp.encode(stream, encodedOperationBody.createPassiveOfferOp);
+          break;
+        case SET_OPTIONS:
+          SetOptionsOp.encode(stream, encodedOperationBody.setOptionsOp);
+          break;
+        case CHANGE_TRUST:
+          ChangeTrustOp.encode(stream, encodedOperationBody.changeTrustOp);
+          break;
+        case ALLOW_TRUST:
+          AllowTrustOp.encode(stream, encodedOperationBody.allowTrustOp);
+          break;
+        case ACCOUNT_MERGE:
+          AccountID.encode(stream, encodedOperationBody.destination);
+          break;
+        case INFLATION:
+          break;
+        case MANAGE_DATA:
+          ManageDataOp.encode(stream, encodedOperationBody.manageDataOp);
+          break;
+        case BUMP_SEQUENCE:
+          BumpSequenceOp.encode(stream, encodedOperationBody.bumpSequenceOp);
+          break;
+      }
+      */
+    }
+
     public static OperationBody decode(XdrDataInputStream stream) throws IOException {
     OperationBody decodedOperationBody = new OperationBody();
     OperationType discriminant = OperationType.decode(stream);

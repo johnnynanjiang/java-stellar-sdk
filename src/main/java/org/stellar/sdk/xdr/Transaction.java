@@ -119,14 +119,12 @@ public class Transaction  {
       stream.writeInt(0);
     }
     Memo.encode(stream, encodedTransaction.memo);
-    /*
     int operationssize = encodedTransaction.getOperations().length;
     stream.writeInt(operationssize);
     for (int i = 0; i < operationssize; i++) {
       Operation.encode(stream, encodedTransaction.operations[i]);
     }
-    TransactionExt.encode(stream, encodedTransaction.ext);
-    */
+    //TransactionExt.encode(stream, encodedTransaction.ext);
   }
   public static Transaction decode(XdrDataInputStream stream) throws IOException {
     Transaction decodedTransaction = new Transaction();

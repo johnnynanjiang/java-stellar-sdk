@@ -41,8 +41,8 @@ public class PaymentOp  {
   }
   public static void encode(XdrDataOutputStream stream, PaymentOp encodedPaymentOp) throws IOException{
     AccountID.encode(stream, encodedPaymentOp.destination);
-    Asset.encode(stream, encodedPaymentOp.asset);
-    Int64.encode(stream, encodedPaymentOp.amount);
+    //Asset.encode(stream, encodedPaymentOp.asset);
+    //Int64.encode(stream, encodedPaymentOp.amount);
   }
   public static PaymentOp decode(XdrDataInputStream stream) throws IOException {
     PaymentOp decodedPaymentOp = new PaymentOp();
