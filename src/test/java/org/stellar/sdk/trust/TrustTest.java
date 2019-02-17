@@ -177,6 +177,9 @@ public class TrustTest {
         Network.useTestNetwork();
 
         KeyPair source = KeyPair.fromSecretSeed("SCH27VUZZ6UAKB67BDNF6FA42YMBMQCBKXWGMFD5TZ6S5ZZCZFLRXKHS");
+        System.out.println("signing private key: " + Arrays.toString(source.mPrivateKey.geta()));
+        System.out.println("signing public key: " + Arrays.toString(source.mPublicKey.getAbyte()));
+
         KeyPair destination = KeyPair.fromAccountId("GDW6AUTBXTOC7FIKUO5BOO3OGLK4SF7ZPOBLMQHMZDI45J2Z6VXRB5NR");
 
         long sequenceNumber = 2908908335136768L;

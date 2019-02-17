@@ -28,8 +28,8 @@ public class KeyPair {
 
   private static final EdDSANamedCurveSpec ed25519 = EdDSANamedCurveTable.ED_25519_CURVE_SPEC;
 
-  private final EdDSAPublicKey mPublicKey;
-  private final EdDSAPrivateKey mPrivateKey;
+  public final EdDSAPublicKey mPublicKey;
+  public final EdDSAPrivateKey mPrivateKey;
 
   /**
    * Creates a new KeyPair without a private key. Useful to simply verify a signature from a
@@ -225,7 +225,7 @@ public class KeyPair {
    */
   public DecoratedSignature signDecorated(byte[] data) {
     byte[] signatureBytes = this.sign(data);
-    System.out.println("signatureBytes: " + Arrays.toString(signatureBytes));
+    System.out.println("signed bytes: " + Arrays.toString(signatureBytes));
     org.stellar.sdk.xdr.Signature signature = new org.stellar.sdk.xdr.Signature();
     signature.setSignature(signatureBytes);
 
