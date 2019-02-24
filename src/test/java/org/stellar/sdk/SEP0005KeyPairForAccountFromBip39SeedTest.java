@@ -1,5 +1,6 @@
 package org.stellar.sdk;
 
+import net.i2p.crypto.eddsa.Utils;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -127,6 +128,12 @@ public final class SEP0005KeyPairForAccountFromBip39SeedTest {
   private static void testDerivedAccount(final String bip39Seed, final int accountNumber, final String expectedAccountId, final String expectedSecret) {
     final byte[] seed = Util.hexToBytes(bip39Seed);
     final KeyPair pair = KeyPair.fromBip39Seed(seed, accountNumber);
+
+    System.out.println("#" + accountNumber);
+    System.out.println("public key:         " + Utils.bytesToHex(pair.getPublicKey()));
+    System.out.println("address/account id: " + pair.getAccountId());
+    System.out.println("secret key:         " + new String(pair.getSecretSeed()));
+
     Assert.assertEquals(expectedAccountId, pair.getAccountId());
     Assert.assertEquals(expectedSecret, new String(pair.getSecretSeed()));
   }
