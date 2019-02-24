@@ -128,7 +128,7 @@ public final class SLIP0010Ed25519PrivateKeyTest {
     );
   }
 
-  private static String deriveEd25519PrivateKey(final String seed, final int... indexes) {
+  public static String deriveEd25519PrivateKey(final String seed, final int... indexes) {
     try {
       return Utils.bytesToHex(SLIP10.deriveEd25519PrivateKey(Utils.hexToBytes(seed), indexes));
     } catch (Exception e) {

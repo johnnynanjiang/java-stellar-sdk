@@ -108,7 +108,7 @@ public final class SEP0005KeyPairForAccountFromBip39SeedTest {
     Assert.assertEquals(pair.getAccountId(), pairFromHardened.getAccountId());
   }
 
-  private static void testDerivedAccounts(final String bip39Seed, final String... testCases) {
+  public static void testDerivedAccounts(final String bip39Seed, final String... testCases) {
     for (final String testLine : testCases) {
       final String[] testParts = testLine.split(" ");
       Assert.assertEquals(3, testParts.length);
