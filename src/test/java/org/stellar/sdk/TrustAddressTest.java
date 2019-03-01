@@ -66,4 +66,12 @@ public class TrustAddressTest {
                 deriveEd25519PrivateKey(bip39Seed, 44, 148, 1, 0, 0)
         );
     }
+
+    @Test
+    public void test_m_44_148_1_0_1() {
+        Assert.assertEquals(
+                "b46738be2511e5003e689ba2418cfcec6ee541b5ee74ed7476339056d819663d",
+                deriveEd25519PrivateKey(bip39Seed, 44, 148, 1, 0, 1)
+        );
+    }
 }
