@@ -29,6 +29,14 @@ public class SEP0005Test {
     }
 
     @Test
+    public void test_m_44_148_1() {
+        Assert.assertEquals(
+                "88f296c601bafd56fd19d1856ee46670b9e2c87db0455ca792b5d8d588a353f1",
+                deriveEd25519PrivateKey(bip39Seed, 44, 148, 1)
+        );
+    }
+
+    @Test
     public void test_m_44_148_0_0_0() {
         Assert.assertEquals(
                 "5bfacd5e07f3a942f565be36e3631ddb6157815f03efd63444ea1cb024f03919",
