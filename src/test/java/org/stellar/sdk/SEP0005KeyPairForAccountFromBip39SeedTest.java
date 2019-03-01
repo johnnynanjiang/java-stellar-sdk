@@ -131,6 +131,7 @@ public final class SEP0005KeyPairForAccountFromBip39SeedTest {
 
     System.out.println("#" + accountNumber);
     System.out.println("public key:         " + Utils.bytesToHex(pair.getPublicKey()));
+    System.out.println("private key:        " + Utils.bytesToHex(pair.mPrivateKey.geta()));
     System.out.println("address/account id: " + pair.getAccountId());
     System.out.println("secret key:         " + new String(pair.getSecretSeed()));
 
