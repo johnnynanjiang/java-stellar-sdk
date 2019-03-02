@@ -1,7 +1,8 @@
-package org.stellar.sdk;
+package org.stellar.sdk.trust;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.stellar.sdk.SEP0005KeyPairForAccountFromBip39SeedTest;
 
 import static org.junit.Assert.*;
 import static org.stellar.sdk.SLIP0010Ed25519PrivateKeyTest.deriveEd25519PrivateKey;
