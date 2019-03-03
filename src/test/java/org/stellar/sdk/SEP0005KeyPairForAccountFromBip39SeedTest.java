@@ -129,11 +129,8 @@ public final class SEP0005KeyPairForAccountFromBip39SeedTest {
     final byte[] seed = Util.hexToBytes(bip39Seed);
 
     byte[] derivedEd25519PrivateKeyAsSeed = new byte[0];
-    byte[] privateKeyFromSeed = new byte[0];
     try {
       derivedEd25519PrivateKeyAsSeed = SLIP10.deriveEd25519PrivateKey(seed, 44, 148, accountNumber);
-      // TODO: deriveEd25519PrivateKey() is not right, should be pure Ed25519 algorithm to get private key from seed
-      privateKeyFromSeed =  SLIP10.deriveEd25519PrivateKey(derivedEd25519PrivateKeyAsSeed, 44, 148, accountNumber);
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -141,7 +138,6 @@ public final class SEP0005KeyPairForAccountFromBip39SeedTest {
 
     System.out.println("#" + accountNumber);
     System.out.println("private key as seed          " + Utils.bytesToHex(derivedEd25519PrivateKeyAsSeed));
-    System.out.println("private key from above       " + Utils.bytesToHex(privateKeyFromSeed));
     System.out.println("private key                  " + Utils.bytesToHex(pair.mPrivateKey.geta()));
     System.out.println("public key                   " + Utils.bytesToHex(pair.getPublicKey()));
     System.out.println("address/account id           " + pair.getAccountId());
