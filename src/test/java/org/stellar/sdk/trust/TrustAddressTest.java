@@ -2,8 +2,10 @@ package org.stellar.sdk.trust;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.stellar.sdk.KeyPair;
 import org.stellar.sdk.SEP0005KeyPairForAccountFromBip39SeedTest;
 
+import static net.i2p.crypto.eddsa.Utils.hexToBytes;
 import static org.junit.Assert.*;
 import static org.stellar.sdk.SLIP0010Ed25519PrivateKeyTest.deriveEd25519PrivateKey;
 
@@ -74,5 +76,11 @@ public class TrustAddressTest {
                 "b46738be2511e5003e689ba2418cfcec6ee541b5ee74ed7476339056d819663d",
                 deriveEd25519PrivateKey(bip39Seed, 44, 148, 1, 0, 1)
         );
+    }
+
+    @Test
+    public void testGetAccountIdFromPublicKey() {
+        KeyPair keyPair = KeyPair.fromPublicKey(hexToBytes("03E20EC6B4A39A629815AE02C0A1393B9225E3B890CAE45B59F42FA29BE9668D"));
+        Assert.assertEquals("GAB6EDWGWSRZUYUYCWXAFQFBHE5ZEJPDXCIMVZC3LH2C7IU35FTI2NOQ", keyPair.getAccountId());
     }
 }

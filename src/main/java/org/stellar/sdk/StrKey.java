@@ -5,6 +5,8 @@ import com.google.common.io.BaseEncoding;
 import java.io.*;
 import java.util.Arrays;
 
+import static org.stellar.sdk.Util.bytesToHex;
+
 public class StrKey {
     public enum VersionByte {
         ACCOUNT_ID((byte)(6 << 3)), // G
@@ -63,9 +65,12 @@ public class StrKey {
             outputStream.write(versionByte.getValue());
             outputStream.write(data);
             byte payload[] = outputStream.toByteArray();
+            System.out.println("payload " + bytesToHex(payload));
             byte checksum[] = StrKey.calculateChecksum(payload);
             outputStream.write(checksum);
+            System.out.println("checksum   " + Arrays.toString(checksum));
             byte unencoded[] = outputStream.toByteArray();
+            System.out.println("unencoded   " + bytesToHex(unencoded));
 
             // Why not use base32Encoding.encode here?
             // We don't want secret seed to be stored as String in memory because of security reasons. It's impossible
